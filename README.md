@@ -43,6 +43,12 @@ Running:
     EXAMPLE> (run)
     FOO-TEST..
     Success: 1 test, 2 checks.
+    
+    EXAMPLE> (test baz-test ; newly defined tests are also immediately run
+               (is (oddp 1)))
+    BAZ-TEST.
+    Success: 1 test, 1 check.
+    BAZ-TEST
 
 ## Overview
 
@@ -69,13 +75,23 @@ A typical workflow might be:
 
 4. Run all tests again to check that nothing is messed up.
 
+Note: 3am is sympathetic to the concept of [repl-driven
+programming](https://mikelevins.github.io/posts/2020-12-18-repl-driven/):
+`test`, when directly run in in the REPL, not only adds the test to `*tests*`
+(like 1am), but also immediately runs it for you, removing the need for
+a manual call to `run`.
+
 ## API
 
 * [special variable] **`*tests*`** -- A list of tests; the default
   argument to `run`.
 
-* [macro] **`test`** `name` *`&body`* `body` -- Define a test function
-  and add it to `*tests*`.
+* [macro] **`test`** `name` *`&body`* `body` -- Define a test function,
+  add it to `*tests*` and then run it immediately.
+
+  Note: the test is immediately run only if the macro is directly evaluated in
+  the REPL, i.e., if neither `*compile-file-pathname*` nor `*load-pathname*`
+  are set.
 
 * [macro] **`is`** `form` -- Assert that `form` evaluates to non-nil.
 
